@@ -2,6 +2,11 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './src/screens/HomeScreen';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'new NativeEventEmitter()',
+]);
 
 export default function App() {
   return (

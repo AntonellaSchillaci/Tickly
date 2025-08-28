@@ -6,6 +6,7 @@ import TaskInput from '../components/TaskInput';
 import TaskList from '../components/TaskList';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { Task } from '../../types';
+import { scheduleTaskNotification, cancelTaskNotification } from '../notifications';
 
 const { width } = Dimensions.get('window');
 
@@ -15,19 +16,31 @@ export default function HomeScreen() {
   const [shoot, setShoot] = useState(false);
 
   const addTask = (text: string, reminderTime?: Date) => {
-    setTasks([
-      ...tasks,
-      { 
-        id: Date.now().toString(), 
-        text, 
-        completed: false, 
-        reminderTime: reminderTime || null 
-      }
-    ]);
+    const newTask: Task = {
+      id: Date.now().toString(),
+      text,
+      completed: false,
+      reminderTime: reminderTime || null,
+    };
+
+    setTasks(prev => [...prev, newTask]);
+
+    if (reminderTime) {
+      scheduleTaskNotification(newTask.id, text, reminderTime);
+    }
   };
-  
+
   const completeTask = (id: string) => {
-    setTasks(prev => prev.map(task => task.id === id ? { ...task, completed: true } : task));
+
+    const task = tasks.find(t => t.id === id);
+
+    if (task?.reminderTime) {
+      cancelTaskNotification(id);
+    }
+
+    setTasks(prev =>
+      prev.map(t => (t.id === id ? { ...t, completed: true } : t))
+    );
 
     const randomOrigin = { x: Math.random() * width, y: 0 };
     setConfettiOrigin(randomOrigin);
@@ -35,16 +48,13 @@ export default function HomeScreen() {
     setTimeout(() => setShoot(true), 50);
 
     setTimeout(() => {
-      setTasks(prev => prev.filter(task => task.id !== id));
+      setTasks(prev => prev.filter(t => t.id !== id));
     }, 300);
   };
 
   return (
     <SafeAreaView style={styles.safe}>
-      <LinearGradient
-        colors={['#fff8f0', '#ffe8d6']}
-        style={styles.gradient}
-      >
+      <LinearGradient colors={['#fff8f0', '#ffe8d6']} style={styles.gradient}>
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <Text style={styles.header}>Tickly</Text>
@@ -73,5 +83,10 @@ const styles = StyleSheet.create({
   gradient: { flex: 1 },
   container: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
   headerContainer: { marginBottom: 20, alignItems: 'center' },
-  header: { fontSize: 36, fontWeight: 'bold', color: '#ff6f61', textAlign: 'center' },
+  header: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#ff6f61',
+    textAlign: 'center',
+  },
 });
