@@ -26,6 +26,9 @@ export default function TaskItem({ task, onComplete }: Props) {
     <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
       <Text style={[styles.text, task.completed && styles.completed]}>
         {task.text}
+        {task.reminderTime && (
+      <Text style={styles.reminderText}> — {new Date(task.reminderTime).toLocaleString()}</Text>
+        )}
       </Text>
       <TouchableOpacity style={styles.button} onPress={() => onComplete(task.id)}>
         <Text style={styles.buttonText}>✔</Text>
@@ -49,12 +52,14 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   text: { fontSize: 16, color: '#333' },
-  completed: { textDecorationLine: 'line-through', color: '#b0bec5' },
+  completed: { textDecorationLine: 'line-through', color: '#b0bec5',  },
   button: {
-    backgroundColor: '#4fc3f7',
+    backgroundColor: '#ff6f61',
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 5,
   },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  reminderText: { fontSize: 12, color: '#999', marginLeft: 5 },
+
 });

@@ -14,9 +14,18 @@ export default function HomeScreen() {
   const [confettiOrigin, setConfettiOrigin] = useState({ x: -10, y: 0 });
   const [shoot, setShoot] = useState(false);
 
-  const addTask = (text: string) =>
-    setTasks([...tasks, { id: Date.now().toString(), text }]);
-
+  const addTask = (text: string, reminderTime?: Date) => {
+    setTasks([
+      ...tasks,
+      { 
+        id: Date.now().toString(), 
+        text, 
+        completed: false, 
+        reminderTime: reminderTime || null 
+      }
+    ]);
+  };
+  
   const completeTask = (id: string) => {
     setTasks(prev => prev.map(task => task.id === id ? { ...task, completed: true } : task));
 
