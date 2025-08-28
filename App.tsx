@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import HomeScreen from './src/screens/HomeScreen';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tickly</Text>
-    </View>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <HomeScreen />
+      </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
-  title: { fontSize: 32, fontWeight: 'bold' },
+  container: { flex: 1, backgroundColor: '#fff8f0' },
 });
